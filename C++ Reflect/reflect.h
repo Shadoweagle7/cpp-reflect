@@ -46,7 +46,6 @@ namespace SE7 {
 	template<class T>
 	class reflect<T, false> final {
 	private:
-		T *ptr;
 		std::type_index datatype;
 	public:
 		using type = T;
@@ -257,6 +256,18 @@ namespace SE7 {
 		}
 
 		~reflect() {}
+	};
+
+	template<class T>
+	class reflect<T &, false /* A reference itself is an alias, not a class. It can be an alias to a class, however. */ > final {
+	private:
+		std::type_index datatype;
+	public:
+		reflect() : datatype(typeid(T &));
+
+		reflect<T> get_referenced_type() {
+			return reflect<T>();
+		}
 	};
 
 	template<class T, class...argv>
